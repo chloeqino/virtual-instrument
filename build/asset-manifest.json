@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/virtual-instrument/static/css/main.e803ee41.css",
+    "main.js": "/virtual-instrument/static/js/main.f697d4a9.js",
+    "static/js/787.989941c2.chunk.js": "/virtual-instrument/static/js/787.989941c2.chunk.js",
+    "static/media/logo.svg": "/virtual-instrument/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/virtual-instrument/index.html",
+    "main.e803ee41.css.map": "/virtual-instrument/static/css/main.e803ee41.css.map",
+    "main.f697d4a9.js.map": "/virtual-instrument/static/js/main.f697d4a9.js.map",
+    "787.989941c2.chunk.js.map": "/virtual-instrument/static/js/787.989941c2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e803ee41.css",
+    "static/js/main.f697d4a9.js"
+  ]
+}
