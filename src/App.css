@@ -26,6 +26,18 @@ button.primary:hover {
 }
 #keyboard {
   padding: 12px 0;
+  justify-content: center;
+}
+#keyboard .key {
+  background: white;
+}
+#keyboard .label {
+  color: #6c58ef;
+}
+#keyboard .key.active {
+  background-color: #6c58ef;
+  border-color: #6c58ef;
+  color: white;
 }
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

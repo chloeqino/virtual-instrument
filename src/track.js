@@ -3,10 +3,11 @@ import * as Tone from "tone";
 export default function Track(props) {
   const startplay = () => {
     Tone.start();
-    let now = Tone.now();
-    const synth = new Tone.Synth().toDestination();
-    console.log(props.notesArr);
+
+    //console.log(props.notesArr);
     for (let i = 0; i < props.notesArr.length; i++) {
+      let now = Tone.now();
+      const synth = new Tone.Synth().toDestination();
       let note = props.notesArr[i];
 
       //console.log(note);
