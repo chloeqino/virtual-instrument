@@ -7,11 +7,40 @@
   pointer-events: none;
 }
 .track {
-  display: flex;
-  flex-direction: row;
   justify-content: center;
   gap: 10px;
   padding: 4px 0;
+}
+.track .playbtn {
+  display: none;
+}
+.track .index {
+  display: inline-table;
+}
+.track:hover .playbtn {
+  display: inline-table;
+}
+.tracklist table {
+  width: 50%;
+  max-width: 500px;
+}
+.tracklist tr {
+  text-align: left;
+}
+.tracklist tr .right {
+  text-align: right;
+}
+.track:hover .index {
+  display: none;
+}
+.track .playbtn.d {
+  display: inline-table;
+}
+.track .index.dn {
+  display: none;
+}
+.track .idx {
+  width: 50px;
 }
 button.primary {
   background: #6c58ef;
@@ -30,6 +59,7 @@ button.primary:hover {
 }
 #keyboard .key {
   background: white;
+  font-size: 25px;
 }
 #keyboard .label {
   color: #6c58ef;

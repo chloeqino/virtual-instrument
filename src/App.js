@@ -48,10 +48,11 @@ function Note(props) {
     synth.triggerAttack(props.pitch, now);
   };
   const release = () => {
+    playing = false;
     btn.current.classList.remove("active");
     setStartTime(tempstart);
     setStopTime(performance.now());
-    playing = false;
+
     synth.triggerRelease(now);
   };
   return (
@@ -80,13 +81,14 @@ function Note(props) {
       >
         {props.pitch}
       </Button>
-      <Box className="label">{props.char}</Box>
+      <Box className="label">{props.char.toUpperCase()}</Box>
     </VStack>
   );
 }
 function App() {
   let recordings = [];
   let r_start = 0;
+  let r_end = 0;
   const now = Tone.now();
   async function startTone() {
     await Tone.start();
@@ -122,7 +124,15 @@ function App() {
   const [record, setRecord] = useState("stop");
   const [tracks, setTracks] = useState([]);
   const [updatetracks, toggleTracks] = useState(false);
-
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      //console.log(e);
+      if (e.keyCode == 32 && record != "stop") {
+        stopRecording();
+        // console.log("space");
+      }
+    });
+  });
   useEffect(() => {
     console.log(pitches);
   }, []);
@@ -145,9 +155,13 @@ function App() {
     */
     if (recordings.length == 0) {
       r_start = startTime;
+      r_end = endTime;
     } else {
       if (startTime <= r_start) {
         r_start = startTime;
+      }
+      if (endTime >= r_end) {
+        r_end = endTime;
       }
     }
     note["pitch"] = pitch;
@@ -155,6 +169,29 @@ function App() {
     note["start"] = startTime;
     recordings.push(note);
     //console.log(recordings);
+  };
+  const startRecord = () => {
+    if (record == "stop") {
+      setRecord("start");
+    }
+  };
+  const stopRecording = () => {
+    if (recordings.length == 0) {
+      setRecord("stop");
+      r_start = 0;
+      return;
+    }
+    for (let i = 0; i < recordings.length; i++) {
+      recordings[i].start = recordings[i].start - r_start;
+    }
+    setRecord("stop");
+    let newrecording = {};
+    newrecording.duration = r_end - r_start + 1;
+    newrecording.notes = recordings;
+    setTracks([...tracks, newrecording]);
+    r_start = 0;
+    r_end = 0;
+    recordings = [];
   };
   return (
     <div className="App">
@@ -170,30 +207,20 @@ function App() {
         <Button
           className="primary"
           variant="solid"
+          key={record}
           onClick={() => {
-            setRecord("start");
+            startRecord();
           }}
         >
           Start Recording
         </Button>
       ) : (
         <Button
+          key={record}
           variant="solid"
           className="primary"
           onClick={() => {
-            setRecord("stop");
-
-            // let currentTrack = tracks;
-            // currentTrack.push(recordings);
-            //setTracks(null);
-            for (let i = 0; i < recordings.length; i++) {
-              recordings[i].start = recordings[i].start - r_start;
-            }
-
-            setTracks([...tracks, recordings]);
-            r_start = 0;
-            recordings = [];
-            //toggleTracks(!updatetracks);
+            stopRecording();
           }}
         >
           Stop Recording

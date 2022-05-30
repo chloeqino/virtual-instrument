@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from "@chakra-ui/react";
 export default function Track(props) {
+  const [playing, togglePlaying] = useState(false);
   const startplay = () => {
     Tone.start();
 
@@ -22,10 +34,38 @@ export default function Track(props) {
   useEffect(() => {
     console.log("track class" + props);
   });
+  useEffect(() => {
+    console.log("p" + playing);
+    if (playing) {
+      setTimeout(() => {
+        togglePlaying(false);
+      }, props.duration + 300);
+    }
+  }, [playing]);
   return (
-    <div className="track">
-      <div>{props.title}</div>
-      <button onClick={startplay}>play</button>
-    </div>
+    <Tr className="track">
+      <Td className="idx">
+        <span
+          key={`index#${playing}#${props.index}`}
+          className={`index ${playing ? "dn" : ""}`}
+        >
+          {props.index + 1}
+        </span>
+        <button
+          className={`playbtn ${playing ? "d" : ""}`}
+          disabled={playing}
+          onClick={() => {
+            startplay();
+            togglePlaying(true);
+          }}
+        >
+          play
+        </button>
+      </Td>
+      <Td>{props.title}</Td>
+      <Td isNumeric className="right">
+        {(props.duration / 1000).toFixed(2)}
+      </Td>
+    </Tr>
   );
 }
