@@ -5,15 +5,27 @@ import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
-  Td,
-  TableCaption,
   TableContainer,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
+import { useDisclosure } from "@chakra-ui/react";
+
 export default function PlayList(props) {
   const [tracks, setTracks] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [editArr, setEditArr] = useState({ arr: [], duration: 0 });
+  const [editDuration, setEditDuraton] = useState(0);
   useEffect(() => {
     console.log("new track!!");
     console.log(props.tracks);
@@ -28,6 +40,7 @@ export default function PlayList(props) {
           title={`Recording ${i + 1}`}
           notesArr={props.tracks[i].notes}
           duration={props.tracks[i].duration}
+          editFunction={openModal}
           index={i}
           key={i}
         />
@@ -35,8 +48,71 @@ export default function PlayList(props) {
     }
     setTracks(currentTracks);
   }
+  const openModal = (arr, d) => {
+    if (!arr) {
+      return;
+    }
+    console.log(arr);
+    onOpen();
+    let o = {};
+    o.arr = arr;
+    o.duration = d;
+    setEditArr(o);
+  };
+  const editPanel = () => {
+    let xlim = Math.max(4000, Math.ceil(editArr.duration / 1000) * 1000) * 0.1;
+    console.log(Math.ceil(editArr.duration / 1000) * 1000);
+    return (
+      <div className="editPanelContainer">
+        <VStack id="vis">
+          {props.pitches.map((e) => {
+            return (
+              <HStack>
+                <Box className="y-label">{e}</Box>
+                <Box w={`${xlim}px`} className="y-bar">
+                  {editArr.arr
+                    .filter((note) => note.pitch == e)
+                    .map((bar) => {
+                      return (
+                        <Box
+                          className="note-bar"
+                          left={`${bar.start * 0.1}px`}
+                          w={`${bar.duration * 0.1}px`}
+                          key={bar.pitch}
+                        ></Box>
+                      );
+                    })}
+                </Box>
+              </HStack>
+            );
+          })}
+        </VStack>
+      </div>
+    );
+  };
   return (
     <div>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        key={editArr.arr.map((e) => {
+          return JSON.stringify(e);
+        })}
+      >
+        <ModalOverlay />
+        <ModalContent className="editModalWindow">
+          <ModalHeader>Modal Title</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>{editPanel()}</ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost">Secondary Action</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
       <h2>Your Recordings</h2>
       {tracks.length ? (
         <TableContainer
@@ -49,6 +125,7 @@ export default function PlayList(props) {
                 <Th className="idx">#</Th>
                 <Th>Title</Th>
                 <Th className="right">Duration(s)</Th>
+                <Th>&nbsp;</Th>
               </Tr>
             </Thead>
             <Tbody>{tracks}</Tbody>

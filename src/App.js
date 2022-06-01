@@ -241,7 +241,7 @@ function App() {
           );
         })}
       </HStack>
-      <PlayList tracks={tracks} key={tracks.length} />
+      <PlayList tracks={tracks} key={tracks.length} pitches={pitches} />
     </div>
   );
 }
