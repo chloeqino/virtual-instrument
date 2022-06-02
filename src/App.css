@@ -11,10 +11,7 @@
   gap: 10px;
   padding: 4px 0;
 }
-.y-axis,
-#vis {
-  flex-direction: column-reverse !important;
-}
+
 #vis {
   align-items: start;
   overflow: scroll;

@@ -241,7 +241,11 @@ function App() {
           );
         })}
       </HStack>
-      <PlayList tracks={tracks} key={tracks.length} pitches={pitches} />
+      <PlayList
+        tracks={tracks}
+        key={tracks.length}
+        pitches={pitches.slice().reverse()}
+      />
     </div>
   );
 }
