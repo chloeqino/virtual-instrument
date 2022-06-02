@@ -4,14 +4,17 @@ import { Tr, Td } from "@chakra-ui/react";
 
 export default function Track(props) {
   const [playing, togglePlaying] = useState(false);
+  const recorder = new Tone.Recorder();
 
   const startplay = () => {
     Tone.start();
+    recorder.start();
 
     //console.log(props.notesArr);
     for (let i = 0; i < props.notesArr.length; i++) {
       let now = Tone.now();
       const synth = new Tone.Synth().toDestination();
+
       let note = props.notesArr[i];
 
       //console.log(note);

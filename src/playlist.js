@@ -64,12 +64,21 @@ export default function PlayList(props) {
     console.log(Math.ceil(editArr.duration / 1000) * 1000);
     return (
       <div className="editPanelContainer">
-        <VStack id="vis">
-          {props.pitches.map((e) => {
-            return (
-              <HStack>
-                <Box className="y-label">{e}</Box>
-                <Box w={`${xlim}px`} className="y-bar">
+        <HStack position="relative">
+          <VStack className="y-axis">
+            {props.pitches.map((e) => {
+              return (
+                <Box className="y-label">
+                  {e}
+                  <hr width="4px" />
+                </Box>
+              );
+            })}
+          </VStack>
+          <VStack id="vis">
+            {props.pitches.map((e) => {
+              return (
+                <Box w={`${xlim}px`} className={`y-bar pitch-${e}`}>
                   {editArr.arr
                     .filter((note) => note.pitch == e)
                     .map((bar) => {
@@ -83,10 +92,10 @@ export default function PlayList(props) {
                       );
                     })}
                 </Box>
-              </HStack>
-            );
-          })}
-        </VStack>
+              );
+            })}
+          </VStack>
+        </HStack>
       </div>
     );
   };

@@ -11,18 +11,41 @@
   gap: 10px;
   padding: 4px 0;
 }
+.y-axis,
+#vis {
+  flex-direction: column-reverse !important;
+}
 #vis {
   align-items: start;
+  overflow: scroll;
 }
 .editPanelContainer {
   width: 70vw;
   max-width: 70vw;
   height: 60vh;
-  overflow: scroll;
-  border: 1px solid;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border: 1px solid rgb(214, 212, 220);
+}
+.y-axis {
+  align-items: end !important;
+  border-right: 1px solid #9896a7;
+  padding-right: 0px;
+  color: #9896a7;
+}
+.y-label hr {
+  border-color: #9896a7;
 }
 .y-bar {
   position: relative;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 20px;
+}
+.y-label {
+  left: 0;
+  height: 20px;
+  text-align: right;
   display: inline-flex !important;
   align-items: center !important;
 }
