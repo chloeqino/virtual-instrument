@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Box, HStack, VStack, useOutsideClick } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  VStack,
+  useOutsideClick,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/react";
 function NoteBar(props) {
   const barRef = useRef();
   useOutsideClick({
+    enabled: false,
     ref: barRef,
     handler: () => {
       if (props.selected) {
@@ -25,16 +36,26 @@ function NoteBar(props) {
 }
 function EditPanel(props) {
   const [selectedNote, setSelectedNote] = useState(-1);
+  const [update, toggleUpdate] = useState(false);
+  const [tempEditArr, settempEditArr] = useState(
+    JSON.parse(JSON.stringify(props.editArr))
+  );
   const setSelected = (i) => {
-    console.log("s" + i);
+    //console.log("s" + i);
     setSelectedNote(i);
   };
+  useEffect(() => {
+    settempEditArr(props.editArr);
+  }, [props.editArr]);
   let xlim =
-    Math.max(4000, Math.ceil(props.editArr.duration / 1000) * 1000) * 0.1;
-  console.log(Math.ceil(props.editArr.duration / 1000) * 1000);
-  return (
-    <div>
-      <div className="editPanelContainer">
+    Math.max(4000, Math.ceil(tempEditArr.duration / 1000) * 1000) * 0.1;
+  console.log(Math.ceil(tempEditArr.duration / 1000) * 1000);
+  return tempEditArr ? (
+    <HStack>
+      <div
+        className="editPanelContainer"
+        key={`${JSON.stringify(tempEditArr)}-${update}`}
+      >
         <HStack position="relative">
           <VStack className="y-axis">
             {props.pitches.map((e) => {
@@ -54,7 +75,7 @@ function EditPanel(props) {
                   className={`y-bar pitch-${e}`}
                   key={`pitchbar-${e}`}
                 >
-                  {props.editArr.arr
+                  {tempEditArr.arr
                     .filter((note) => note.pitch == e)
                     .map((bar) => {
                       return (
@@ -78,7 +99,46 @@ function EditPanel(props) {
           </VStack>
         </HStack>
       </div>
-    </div>
+      <div key={JSON.stringify(tempEditArr.arr[selectedNote])}>
+        {selectedNote >= 0 ? (
+          <VStack>
+            <section>
+              <h3>pitch</h3>
+              {tempEditArr.arr[selectedNote]?.pitch}
+            </section>
+            <section>
+              <h3>duration</h3>
+
+              <NumberInput
+                step={1}
+                defaultValue={(tempEditArr.arr[selectedNote]?.duration).toFixed(
+                  0
+                )}
+                min={0}
+                onChange={(e) => {
+                  tempEditArr.arr[selectedNote].duration = Number(e);
+                }}
+                onBlur={(e) => {
+                  console.log(e);
+
+                  toggleUpdate(!update);
+                }}
+              >
+                <NumberInputField />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </section>
+          </VStack>
+        ) : (
+          <Box>None</Box>
+        )}
+      </div>
+    </HStack>
+  ) : (
+    ""
   );
 }
 export default EditPanel;
