@@ -183,6 +183,7 @@ function App() {
     }
     for (let i = 0; i < recordings.length; i++) {
       recordings[i].start = recordings[i].start - r_start;
+      recordings[i].idx = i;
     }
     setRecord("stop");
     let newrecording = {};

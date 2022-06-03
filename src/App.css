@@ -51,6 +51,9 @@
   background-color: #614ed7;
   height: 15px;
 }
+.note-bar.active {
+  outline: 2px solid rgb(16, 246, 223);
+}
 .editModalWindow {
   max-width: 90vw !important;
 }

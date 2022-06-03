@@ -20,6 +20,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
+import EditPanel from "./editPanel";
 
 export default function PlayList(props) {
   const [tracks, setTracks] = useState([]);
@@ -59,46 +60,7 @@ export default function PlayList(props) {
     o.duration = d;
     setEditArr(o);
   };
-  const editPanel = () => {
-    let xlim = Math.max(4000, Math.ceil(editArr.duration / 1000) * 1000) * 0.1;
-    console.log(Math.ceil(editArr.duration / 1000) * 1000);
-    return (
-      <div className="editPanelContainer">
-        <HStack position="relative">
-          <VStack className="y-axis">
-            {props.pitches.map((e) => {
-              return (
-                <Box className="y-label">
-                  {e}
-                  <hr width="4px" />
-                </Box>
-              );
-            })}
-          </VStack>
-          <VStack id="vis">
-            {props.pitches.map((e) => {
-              return (
-                <Box w={`${xlim}px`} className={`y-bar pitch-${e}`}>
-                  {editArr.arr
-                    .filter((note) => note.pitch == e)
-                    .map((bar) => {
-                      return (
-                        <Box
-                          className="note-bar"
-                          left={`${bar.start * 0.1}px`}
-                          w={`${bar.duration * 0.1}px`}
-                          key={bar.pitch}
-                        ></Box>
-                      );
-                    })}
-                </Box>
-              );
-            })}
-          </VStack>
-        </HStack>
-      </div>
-    );
-  };
+
   return (
     <div>
       <Modal
@@ -112,7 +74,9 @@ export default function PlayList(props) {
         <ModalContent className="editModalWindow">
           <ModalHeader>Modal Title</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>{editPanel()}</ModalBody>
+          <ModalBody>
+            {<EditPanel editArr={editArr} pitches={props.pitches} />}
+          </ModalBody>
 
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={onClose}>
