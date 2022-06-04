@@ -37,6 +37,9 @@ function NoteBar(props) {
 function EditPanel(props) {
   const [selectedNote, setSelectedNote] = useState(-1);
   const [update, toggleUpdate] = useState(false);
+  const visRef = useRef();
+  const scrollX = useRef();
+
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
   );
@@ -45,11 +48,14 @@ function EditPanel(props) {
     setSelectedNote(i);
   };
   useEffect(() => {
+    visRef.current.scrollLeft = scrollX.current;
+  }, [update]);
+  useEffect(() => {
     settempEditArr(props.editArr);
   }, [props.editArr]);
   let xlim =
     Math.max(4000, Math.ceil(tempEditArr.duration / 1000) * 1000) * 0.1;
-  console.log(Math.ceil(tempEditArr.duration / 1000) * 1000);
+  //console.log(Math.ceil(tempEditArr.duration / 1000) * 1000);
   return tempEditArr ? (
     <HStack>
       <div
@@ -67,7 +73,7 @@ function EditPanel(props) {
               );
             })}
           </VStack>
-          <VStack id="vis">
+          <VStack id="vis" ref={visRef}>
             {props.pitches.map((e) => {
               return (
                 <Box
@@ -107,29 +113,41 @@ function EditPanel(props) {
               {tempEditArr.arr[selectedNote]?.pitch}
             </section>
             <section>
-              <h3>duration</h3>
-
-              <NumberInput
-                step={1}
-                defaultValue={(tempEditArr.arr[selectedNote]?.duration).toFixed(
-                  0
-                )}
-                min={0}
-                onChange={(e) => {
-                  tempEditArr.arr[selectedNote].duration = Number(e);
-                }}
-                onBlur={(e) => {
-                  console.log(e);
-
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  scrollX.current = visRef.current.scrollLeft;
                   toggleUpdate(!update);
                 }}
               >
-                <NumberInputField />
-                <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-                </NumberInputStepper>
-              </NumberInput>
+                <label htmlFor="duration">duration</label>
+
+                <NumberInput
+                  id="duration"
+                  step={1}
+                  defaultValue={(tempEditArr.arr[
+                    selectedNote
+                  ]?.duration).toFixed(0)}
+                  min={0}
+                  onChange={(e) => {
+                    tempEditArr.arr[selectedNote].duration = Number(e);
+                  }}
+                  onSubmit={(e) => {
+                    scrollX.current = visRef.current.scrollLeft;
+                    toggleUpdate(!update);
+                  }}
+                  onBlur={(e) => {
+                    scrollX.current = visRef.current.scrollLeft;
+                    toggleUpdate(!update);
+                  }}
+                >
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>
+              </form>
             </section>
           </VStack>
         ) : (
