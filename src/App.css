@@ -6,6 +6,7 @@
   height: 40vmin;
   pointer-events: none;
 }
+
 .track {
   justify-content: center;
   gap: 10px;
@@ -20,9 +21,15 @@
   width: 70vw;
   max-width: 70vw;
   height: 60vh;
+  max-height: 450px;
   overflow-x: hidden;
   overflow-y: scroll;
   border: 1px solid rgb(214, 212, 220);
+}
+.edit-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .y-axis {
   align-items: end !important;
@@ -37,11 +44,11 @@
   position: relative;
   display: inline-flex !important;
   align-items: center !important;
-  height: 20px;
+  height: 30px;
 }
 .y-label {
   left: 0;
-  height: 20px;
+  height: 30px;
   text-align: right;
   display: inline-flex !important;
   align-items: center !important;
@@ -50,9 +57,13 @@
   position: absolute;
   background-color: #614ed7;
   height: 15px;
+  border-radius: 5px;
+}
+.note-bar:hover {
+  outline: 3px solid rgb(16, 246, 223);
 }
 .note-bar.active {
-  outline: 2px solid rgb(16, 246, 223);
+  outline: 1.5px solid rgb(16, 246, 223);
 }
 .editModalWindow {
   max-width: 90vw !important;

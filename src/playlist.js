@@ -65,7 +65,10 @@ export default function PlayList(props) {
     <div>
       <Modal
         isOpen={isOpen}
+        closeOnOverlayClick={false}
+        className="editModal"
         onClose={onClose}
+        isCentered
         key={editArr.arr.map((e) => {
           return JSON.stringify(e);
         })}
