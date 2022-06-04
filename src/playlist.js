@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Track from "./track";
 import { Box } from "@chakra-ui/react";
 import {
@@ -27,6 +27,8 @@ export default function PlayList(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [editArr, setEditArr] = useState({ arr: [], duration: 0 });
   const [editDuration, setEditDuraton] = useState(0);
+  const [update, toggleUpdate] = useState(false);
+  const editIdx = useRef();
   useEffect(() => {
     console.log("new track!!");
     console.log(props.tracks);
@@ -35,6 +37,7 @@ export default function PlayList(props) {
   }, props.tracks);
   function updatetracks() {
     let currentTracks = [];
+    console.log("updating track");
     for (let i = 0; i < props.tracks.length; i++) {
       currentTracks.push(
         <Track
@@ -49,7 +52,10 @@ export default function PlayList(props) {
     }
     setTracks(currentTracks);
   }
-  const openModal = (arr, d) => {
+  useEffect(() => {
+    updatetracks();
+  }, [update]);
+  const openModal = (arr, d, i) => {
     if (!arr) {
       return;
     }
@@ -59,6 +65,7 @@ export default function PlayList(props) {
     o.arr = arr;
     o.duration = d;
     setEditArr(o);
+    editIdx.current = i;
   };
 
   return (
@@ -74,26 +81,25 @@ export default function PlayList(props) {
         })}
       >
         <ModalOverlay />
-        <ModalContent className="editModalWindow">
-          <ModalHeader>Modal Title</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {<EditPanel editArr={editArr} pitches={props.pitches} />}
-          </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant="ghost">Secondary Action</Button>
-          </ModalFooter>
-        </ModalContent>
+        {
+          <EditPanel
+            editArr={editArr}
+            pitches={props.pitches}
+            closeFunction={onClose}
+            saveFunction={(arr) => {
+              props.tracks[editIdx.current].notes = arr.arr;
+              props.tracks[editIdx.current].duration = arr.duration;
+              toggleUpdate(!update);
+            }}
+          />
+        }
       </Modal>
       <h2>Your Recordings</h2>
       {tracks.length ? (
         <TableContainer
           className={`tracklist updating`}
-          key={props.tracks.length}
+          key={`${props.tracks.length}#${update}`}
         >
           <Table variant="simple" w="70%" margin="auto">
             <Thead>

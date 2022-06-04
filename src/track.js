@@ -64,7 +64,7 @@ export default function Track(props) {
       <Td>
         <button
           onClick={() => {
-            props.editFunction(props.notesArr, props.duration);
+            props.editFunction(props.notesArr, props.duration, props.index);
           }}
         >
           edit
