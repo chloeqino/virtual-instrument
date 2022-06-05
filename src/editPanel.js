@@ -511,10 +511,10 @@ function EditPanel(props) {
                         toggleUpdate(!update);
                       }}
                     >
-                      <label htmlFor="duration">duration(ms)</label>
+                      <label htmlFor="duration-edit">Duration(ms)</label>
 
                       <NumberInput
-                        id="duration"
+                        id="duration-edit"
                         step={1}
                         defaultValue={(tempEditArr.arr[
                           selectedNote

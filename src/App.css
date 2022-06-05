@@ -45,11 +45,10 @@
   padding-bottom: 10px;
 }
 .edit-right .adsr label {
-  font-weight: 300;
   text-transform: uppercase;
-  font-size: 0.6em;
-  color: #494c51;
-  font-weight: 700;
+  font-size: 0.5em;
+  color: #747d8a;
+  font-weight: 800;
 }
 .y-axis {
   align-items: end !important;
