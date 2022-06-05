@@ -230,10 +230,10 @@ function EditPanel(props) {
             <div className="dropdownContainer">
               <Button
                 onClick={() => {
-                  toggleDropdown(!dropdown);
+                  toggleDropdown(true);
                 }}
               >
-                +
+                + Add New Node
               </Button>
               <ScaleFade
                 className={`dropdown ${dropdown ? "show" : ""}`}
@@ -422,7 +422,7 @@ function EditPanel(props) {
             </div>
           </HStack>
 
-          <HStack alignItems="stretch">
+          <HStack alignItems="stretch" alignSelf="start">
             <div
               className="editPanelContainer"
               ref={containerRef}
@@ -714,7 +714,14 @@ function EditPanel(props) {
                   </section>
                 </VStack>
               ) : (
-                <Box>None</Box>
+                <Box
+                  w="100%"
+                  textAlign="center"
+                  color="gray.400"
+                  fontWeight="700"
+                >
+                  Select a node to edit
+                </Box>
               )}
             </div>
           </HStack>
