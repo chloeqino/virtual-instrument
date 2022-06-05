@@ -102,6 +102,24 @@
 .track .idx {
   width: 50px;
 }
+.dropdownContainer {
+  position: relative;
+}
+.control-btns {
+  z-index: 99;
+}
+.dropdown {
+  position: absolute;
+  background-color: white;
+  top: 101%;
+  left: 0;
+  padding: 14px;
+  width: 200px;
+  display: none;
+}
+.dropdown.show {
+  display: table;
+}
 button.primary {
   background: #6c58ef;
   color: white;

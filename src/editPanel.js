@@ -19,8 +19,10 @@ import {
   ModalHeader,
   ModalCloseButton,
   useDisclosure,
+  ScaleFade,
 } from "@chakra-ui/react";
 import * as Tone from "tone";
+import { Scale } from "tone";
 function NoteBar(props) {
   const barRef = useRef();
   useOutsideClick({
@@ -65,6 +67,14 @@ function EditPanel(props) {
   const scrollX = useRef();
   const scrollY = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [dropdown, toggleDropdown] = useState(false);
+  const [addNew, toggleAdd] = useState(false);
+  const newpitch = useRef();
+  const newd = useRef(0);
+  const newStart = useRef(0);
+  const p_input = useRef();
+  const d_input = useRef();
+  const s_input = useRef();
 
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
@@ -74,8 +84,28 @@ function EditPanel(props) {
     setSelectedNote(i);
   };
   useEffect(() => {
+    console.log("add new");
+    if (newd.current > 0 && props.pitches.includes(newpitch.current)) {
+      let newObj = {};
+      newObj.pitch = newpitch.current;
+      newObj.duration = newd.current;
+      newObj.start = newStart.current;
+      newObj.idx = tempEditArr.arr.slice().length;
+      tempEditArr.arr.push(newObj);
+
+      newd.current = 0;
+      newStart.current = 0;
+
+      console.log(d_input.current);
+      s_input.current.value = 0;
+      toggleUpdate(!update);
+    }
+  }, [addNew]);
+  useEffect(() => {
     visRef.current.scrollLeft = scrollX.current;
     containerRef.current.scrollTop = scrollY.current;
+
+    toggleDropdown(false);
   }, [update]);
   useEffect(() => {
     settempEditArr(JSON.parse(JSON.stringify(props.editArr)));
@@ -140,7 +170,7 @@ function EditPanel(props) {
           </ModalContent>
         </Modal>
         <VStack>
-          <div>
+          <HStack className="control-btns">
             <Button
               className="playbtn"
               onClick={() => {
@@ -149,7 +179,93 @@ function EditPanel(props) {
             >
               play
             </Button>
-          </div>
+            <div className="dropdownContainer">
+              <Button
+                onClick={() => {
+                  toggleDropdown(!dropdown);
+                }}
+              >
+                +
+              </Button>
+              <ScaleFade
+                className={`dropdown ${dropdown ? "show" : ""}`}
+                initialScale={0.9}
+                in={dropdown}
+              >
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    toggleAdd(!addNew);
+                  }}
+                  key={`update-${addNew}`}
+                >
+                  <p>
+                    <label htmlFor="pitch-select">Pitch</label>
+                    <Select
+                      id="pitch-select"
+                      placeholder="select a pitch"
+                      className="edit-mode"
+                      ref={p_input}
+                      onChange={(e) => {
+                        newpitch.current = e.target.value;
+                        console.log(e.target.value);
+                      }}
+                    >
+                      {props.pitches.map((p) => {
+                        return (
+                          <option value={p} key={`select-${p}`}>
+                            {p}
+                          </option>
+                        );
+                      })}
+                    </Select>
+                  </p>
+                  <label htmlFor="duration">duration(ms)</label>
+
+                  <NumberInput
+                    id="duration"
+                    step={1}
+                    defaultValue={0}
+                    min={0}
+                    onChange={(e) => {
+                      newd.current = Number(e);
+                      //tempEditArr.arr[selectedNote].duration = Number(e);
+                    }}
+                    onBlur={(e) => {
+                      scrollX.current = visRef.current.scrollLeft;
+                      //toggleUpdate(!update);
+                    }}
+                  >
+                    <NumberInputField ref={d_input} />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <p>
+                    {" "}
+                    <label htmlFor="stime-edit">Start Time(ms)</label>
+                    <NumberInput
+                      id="stime-edit"
+                      step={1}
+                      defaultValue={0}
+                      min={0}
+                      onChange={(e) => {
+                        newStart.current = Number(e);
+                      }}
+                    >
+                      <NumberInputField ref={s_input} />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  </p>
+                  <input type="submit" value="Add"></input>
+                </form>
+              </ScaleFade>
+            </div>
+          </HStack>
 
           <HStack alignItems="stretch">
             <div
