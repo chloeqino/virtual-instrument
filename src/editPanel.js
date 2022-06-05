@@ -89,6 +89,9 @@ function EditPanel(props) {
   );
   const setSelected = (i, elem) => {
     selectedElem.current = elem;
+    if (i >= 0) {
+      playNote(tempEditArr.arr[i]);
+    }
     setSelectedNote(i);
   };
 
@@ -139,6 +142,7 @@ function EditPanel(props) {
       sustain_input.current = 0.3;
       release_input.current = 1;
       s_input.current.value = 0;
+      playNote(newObj);
       toggleUpdate(!update);
       setSelectedNote(tempEditArr.arr.length - 1);
     }
@@ -152,6 +156,19 @@ function EditPanel(props) {
   useEffect(() => {
     settempEditArr(JSON.parse(JSON.stringify(props.editArr)));
   }, [props.editArr]);
+  const playNote = (note) => {
+    Tone.start();
+    let now = Tone.now();
+    const synth = new Tone.Synth({
+      envelope: {
+        attack: note.attack,
+        decay: note.decay,
+        sustain: note.sustain,
+        release: note.release,
+      },
+    }).toDestination();
+    synth.triggerAttackRelease(note.pitch, note.duration / 1000, now);
+  };
   const startplay = () => {
     Tone.start();
 
