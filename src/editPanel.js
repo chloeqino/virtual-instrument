@@ -75,6 +75,7 @@ function EditPanel(props) {
   const p_input = useRef();
   const d_input = useRef();
   const s_input = useRef();
+  const dropdownRef = useRef();
 
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
@@ -82,6 +83,31 @@ function EditPanel(props) {
   const setSelected = (i, elem) => {
     selectedElem.current = elem;
     setSelectedNote(i);
+  };
+
+  useOutsideClick({
+    ref: dropdownRef,
+    handler: () => {
+      toggleDropdown(false);
+    },
+  });
+  const computeDuration = (arr) => {
+    //console.log("cd" + arr);
+    if (!arr || arr.length < 1) {
+      return;
+    }
+    let tempStart = arr[0]?.start;
+    let tempEnd = arr[0]?.start + arr[0]?.duration;
+    for (let i = 1; i < arr.length; i++) {
+      let o = arr[i];
+      if (o.start <= tempStart) {
+        tempStart = o.start;
+      }
+      if (o.start + o.duration >= tempEnd) {
+        tempEnd = o.start + o.duration;
+      }
+    }
+    return tempEnd - tempStart + 1;
   };
   useEffect(() => {
     console.log("add new");
@@ -93,18 +119,20 @@ function EditPanel(props) {
       newObj.idx = tempEditArr.arr.slice().length;
       tempEditArr.arr.push(newObj);
 
+      scrollX.current = visRef.current.scrollLeft;
+      scrollY.current = containerRef.current.scrollTop;
       newd.current = 0;
       newStart.current = 0;
 
-      console.log(d_input.current);
       s_input.current.value = 0;
       toggleUpdate(!update);
+      setSelectedNote(tempEditArr.arr.length - 1);
     }
   }, [addNew]);
   useEffect(() => {
     visRef.current.scrollLeft = scrollX.current;
     containerRef.current.scrollTop = scrollY.current;
-
+    tempEditArr.duration = computeDuration(tempEditArr.arr);
     toggleDropdown(false);
   }, [update]);
   useEffect(() => {
@@ -190,11 +218,13 @@ function EditPanel(props) {
               <ScaleFade
                 className={`dropdown ${dropdown ? "show" : ""}`}
                 initialScale={0.9}
+                ref={dropdownRef}
                 in={dropdown}
               >
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
+
                     toggleAdd(!addNew);
                   }}
                   key={`update-${addNew}`}
@@ -229,11 +259,14 @@ function EditPanel(props) {
                     min={0}
                     onChange={(e) => {
                       newd.current = Number(e);
+                      scrollX.current = visRef.current.scrollLeft;
+                      scrollY.current = containerRef.current.scrollTop;
                       //tempEditArr.arr[selectedNote].duration = Number(e);
                     }}
                     onBlur={(e) => {
                       scrollX.current = visRef.current.scrollLeft;
-                      //toggleUpdate(!update);
+                      scrollX.current = visRef.current.scrollLeft;
+                      scrollY.current = containerRef.current.scrollTop;
                     }}
                   >
                     <NumberInputField ref={d_input} />
@@ -426,7 +459,19 @@ function EditPanel(props) {
       </ModalBody>
       <ModalFooter justifyContent="center">
         <HStack justifyContent="space-between" className="footerbtns">
-          <Button variant="ghost" onClick={onOpen}>
+          <Button
+            variant="ghost"
+            onClick={() => {
+              if (
+                JSON.stringify(tempEditArr.arr) ==
+                JSON.stringify(props.editArr.arr)
+              ) {
+                props.closeFunction();
+              } else {
+                onOpen();
+              }
+            }}
+          >
             Cancel
           </Button>
           <Button
