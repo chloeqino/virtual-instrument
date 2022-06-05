@@ -21,6 +21,7 @@ import {
   useDisclosure,
   ScaleFade,
 } from "@chakra-ui/react";
+
 import * as Tone from "tone";
 import { Scale } from "tone";
 function NoteBar(props) {
@@ -33,6 +34,8 @@ function NoteBar(props) {
       if (
         e.target.classList.contains("edit-right") ||
         e.target.classList.contains("playbtn") ||
+        e.target.classList.contains("adsr") ||
+        e.target.parentNode.classList.contains("adsr") ||
         e.target.tagName == "FORM" ||
         e.target.tagName == "LABEL" ||
         e.target.tagName == "INPUT" ||
@@ -76,6 +79,10 @@ function EditPanel(props) {
   const d_input = useRef();
   const s_input = useRef();
   const dropdownRef = useRef();
+  const atk_input = useRef(0.005);
+  const decay_input = useRef(0.1);
+  const sustain_input = useRef(0.3);
+  const release_input = useRef(1);
 
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
@@ -116,6 +123,10 @@ function EditPanel(props) {
       newObj.pitch = newpitch.current;
       newObj.duration = newd.current;
       newObj.start = newStart.current;
+      newObj.attack = atk_input.current;
+      newObj.decay = decay_input.current;
+      newObj.sustain = sustain_input.current;
+      newObj.release = release_input.current;
       newObj.idx = tempEditArr.arr.slice().length;
       tempEditArr.arr.push(newObj);
 
@@ -123,7 +134,10 @@ function EditPanel(props) {
       scrollY.current = containerRef.current.scrollTop;
       newd.current = 0;
       newStart.current = 0;
-
+      atk_input.current = 0.005;
+      decay_input.current = 0.1;
+      sustain_input.current = 0.3;
+      release_input.current = 1;
       s_input.current.value = 0;
       toggleUpdate(!update);
       setSelectedNote(tempEditArr.arr.length - 1);
@@ -144,9 +158,15 @@ function EditPanel(props) {
     //console.log(props.notesArr);
     for (let i = 0; i < tempEditArr.arr.length; i++) {
       let now = Tone.now();
-      const synth = new Tone.Synth().toDestination();
-
       let note = tempEditArr.arr[i];
+      const synth = new Tone.Synth({
+        envelope: {
+          attack: note.attack,
+          decay: note.decay,
+          sustain: note.sustain,
+          release: note.release,
+        },
+      }).toDestination();
 
       //console.log(note);
 
@@ -264,8 +284,6 @@ function EditPanel(props) {
                       //tempEditArr.arr[selectedNote].duration = Number(e);
                     }}
                     onBlur={(e) => {
-                      scrollX.current = visRef.current.scrollLeft;
-                      scrollX.current = visRef.current.scrollLeft;
                       scrollY.current = containerRef.current.scrollTop;
                     }}
                   >
@@ -277,9 +295,9 @@ function EditPanel(props) {
                   </NumberInput>
                   <p>
                     {" "}
-                    <label htmlFor="stime-edit">Start Time(ms)</label>
+                    <label htmlFor="stime-new">Start Time(ms)</label>
                     <NumberInput
-                      id="stime-edit"
+                      id="stime-new"
                       step={1}
                       defaultValue={0}
                       min={0}
@@ -293,6 +311,110 @@ function EditPanel(props) {
                         <NumberDecrementStepper />
                       </NumberInputStepper>
                     </NumberInput>
+                  </p>
+                  <p className="adsk-new">
+                    <VStack>
+                      <HStack>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          <label htmlFor="atk-new">Attack</label>
+
+                          <NumberInput
+                            id="atk-new"
+                            step={0.001}
+                            defaultValue={0.005}
+                            min={0}
+                            max={2}
+                            onChange={(e) => {
+                              atk_input.current = Number(e);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          <label htmlFor="decay-new">Decay</label>
+
+                          <NumberInput
+                            id="decay-new"
+                            step={0.05}
+                            defaultValue={0.1}
+                            min={0}
+                            max={2}
+                            onChange={(e) => {
+                              decay_input.current = Number(e);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                      </HStack>
+                      <HStack>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          <label htmlFor="sustain-new">Sustain</label>
+
+                          <NumberInput
+                            id="sustain-new"
+                            step={0.05}
+                            defaultValue={0.3}
+                            min={0}
+                            max={1}
+                            onChange={(e) => {
+                              sustain_input.current = Number(e);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          <label htmlFor="release-new">Release</label>
+
+                          <NumberInput
+                            id="release-new"
+                            step={0.05}
+                            defaultValue={1}
+                            min={0}
+                            max={3}
+                            onChange={(e) => {
+                              release_input.current = Number(e);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                      </HStack>
+                    </VStack>
                   </p>
                   <input type="submit" value="Add"></input>
                 </form>
@@ -448,6 +570,147 @@ function EditPanel(props) {
                         </NumberInputStepper>
                       </NumberInput>
                     </form>
+                  </section>
+                  <section className="adsr">
+                    <header>ADSR</header>
+                    <VStack>
+                      <HStack>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            scrollX.current = visRef.current.scrollLeft;
+                            scrollY.current = containerRef.current.scrollTop;
+                            toggleUpdate(!update);
+                          }}
+                        >
+                          <label htmlFor="atk-edit">Attack</label>
+
+                          <NumberInput
+                            id="atk-edit"
+                            step={0.001}
+                            defaultValue={tempEditArr.arr[selectedNote]?.attack}
+                            min={0}
+                            max={2}
+                            onChange={(e) => {
+                              tempEditArr.arr[selectedNote].attack = Number(e);
+                            }}
+                            onBlur={(e) => {
+                              scrollX.current = visRef.current.scrollLeft;
+                              scrollY.current = containerRef.current.scrollTop;
+                              toggleUpdate(!update);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            scrollX.current = visRef.current.scrollLeft;
+                            scrollY.current = containerRef.current.scrollTop;
+                            toggleUpdate(!update);
+                          }}
+                        >
+                          <label htmlFor="decay-edit">Decay</label>
+
+                          <NumberInput
+                            id="decay-edit"
+                            step={0.05}
+                            defaultValue={tempEditArr.arr[selectedNote]?.decay}
+                            min={0}
+                            max={2}
+                            onChange={(e) => {
+                              tempEditArr.arr[selectedNote].decay = Number(e);
+                            }}
+                            onBlur={(e) => {
+                              scrollX.current = visRef.current.scrollLeft;
+                              scrollY.current = containerRef.current.scrollTop;
+                              toggleUpdate(!update);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                      </HStack>
+                      <HStack>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            scrollX.current = visRef.current.scrollLeft;
+                            scrollY.current = containerRef.current.scrollTop;
+                            toggleUpdate(!update);
+                          }}
+                        >
+                          <label htmlFor="sustain-edit">Sustain</label>
+
+                          <NumberInput
+                            id="sustain-edit"
+                            step={0.05}
+                            defaultValue={
+                              tempEditArr.arr[selectedNote]?.sustain
+                            }
+                            min={0}
+                            max={1}
+                            onChange={(e) => {
+                              tempEditArr.arr[selectedNote].sustain = Number(e);
+                            }}
+                            onBlur={(e) => {
+                              scrollX.current = visRef.current.scrollLeft;
+                              scrollY.current = containerRef.current.scrollTop;
+                              toggleUpdate(!update);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            scrollX.current = visRef.current.scrollLeft;
+                            scrollY.current = containerRef.current.scrollTop;
+                            toggleUpdate(!update);
+                          }}
+                        >
+                          <label htmlFor="release-edit">Release</label>
+
+                          <NumberInput
+                            id="release-edit"
+                            step={0.05}
+                            defaultValue={
+                              tempEditArr.arr[selectedNote]?.release
+                            }
+                            min={0}
+                            max={3}
+                            onChange={(e) => {
+                              tempEditArr.arr[selectedNote].release = Number(e);
+                            }}
+                            onBlur={(e) => {
+                              scrollX.current = visRef.current.scrollLeft;
+                              scrollY.current = containerRef.current.scrollTop;
+                              toggleUpdate(!update);
+                            }}
+                          >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                              <NumberIncrementStepper />
+                              <NumberDecrementStepper />
+                            </NumberInputStepper>
+                          </NumberInput>
+                        </form>
+                      </HStack>
+                    </VStack>
                   </section>
                 </VStack>
               ) : (

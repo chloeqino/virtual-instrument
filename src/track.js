@@ -13,9 +13,15 @@ export default function Track(props) {
     //console.log(props.notesArr);
     for (let i = 0; i < props.notesArr.length; i++) {
       let now = Tone.now();
-      const synth = new Tone.Synth().toDestination();
-
       let note = props.notesArr[i];
+      const synth = new Tone.Synth({
+        envelope: {
+          attack: note.attack,
+          decay: note.decay,
+          sustain: note.sustain,
+          release: note.release,
+        },
+      }).toDestination();
 
       //console.log(note);
 

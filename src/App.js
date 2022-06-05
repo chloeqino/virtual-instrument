@@ -167,6 +167,10 @@ function App() {
     note["pitch"] = pitch;
     note["duration"] = endTime - startTime;
     note["start"] = startTime;
+    note["attack"] = 0.005;
+    note["decay"] = 0.1;
+    note["sustain"] = 0.3;
+    note["release"] = 1;
     recordings.push(note);
     //console.log(recordings);
   };
