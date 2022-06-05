@@ -730,7 +730,7 @@ function EditPanel(props) {
       <ModalFooter justifyContent="center">
         <HStack justifyContent="space-between" className="footerbtns">
           <Button
-            variant="ghost"
+            colorScheme="gray"
             onClick={() => {
               if (
                 JSON.stringify(tempEditArr.arr) ==
