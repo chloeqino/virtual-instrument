@@ -83,6 +83,8 @@ function EditPanel(props) {
   const decay_input = useRef(0.1);
   const sustain_input = useRef(0.3);
   const release_input = useRef(1);
+  const [vis_size, setVisSize] = useState(0);
+  const overlayRef = useRef();
 
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
@@ -151,8 +153,35 @@ function EditPanel(props) {
     visRef.current.scrollLeft = scrollX.current;
     containerRef.current.scrollTop = scrollY.current;
     tempEditArr.duration = computeDuration(tempEditArr.arr);
+    if (visRef.current) {
+      setVisSize(visRef.current.scrollWidth);
+    }
     toggleDropdown(false);
   }, [update]);
+  useEffect(() => {
+    //console.log("width" + visRef.current.clientWidth);
+    if (visRef.current) {
+      setVisSize(visRef.current.scrollWidth);
+    }
+    window.addEventListener("resize", () => {
+      //console.log("width" + visRef.current.clientWidth);
+      if (visRef.current) {
+        setVisSize(visRef.current.scrollWidth);
+      }
+    });
+    console.log(visRef.current);
+    visRef.current.addEventListener("scroll", (e) => {
+      console.log("scrolling" + e.target.scrollLeft);
+      document.getElementById("overlay-scroll").style.left =
+        e.target.scrollLeft * -1 + "px";
+      //console.log("scrolling" + overlayRef.current.scrollLeft);
+    });
+    overlayRef.current.addEventListener("scroll", (e) => {
+      console.log("scrolling" + e.target.scrollLeft);
+      // overlayRef.current.scrollLeft = e.target.scrollLeft;
+      //console.log("scrolling" + overlayRef.current.scrollLeft);
+    });
+  }, []);
   useEffect(() => {
     settempEditArr(JSON.parse(JSON.stringify(props.editArr)));
   }, [props.editArr]);
@@ -457,8 +486,33 @@ function EditPanel(props) {
                     );
                   })}
                 </VStack>
-                <Box id="vis-overlay" w={`${xlim()}px`}></Box>
-                <VStack id="vis" ref={visRef}>
+
+                <VStack
+                  id="vis"
+                  ref={visRef}
+                  onScroll={(e) => {
+                    document.getElementById("overlay-scroll").style.left =
+                      e.target.scrollLeft * -1 + "px";
+                  }}
+                >
+                  <Box
+                    id="vis-overlay"
+                    key={`size-${vis_size}`}
+                    w={`${vis_size}px`}
+                    ref={overlayRef}
+                  >
+                    <div id="overlay-scroll">
+                      {[...Array(Math.floor(vis_size / 100)).keys()].map(
+                        (e) => {
+                          return (
+                            <Box w="100px" className="x-grid">
+                              {e}s
+                            </Box>
+                          );
+                        }
+                      )}
+                    </div>
+                  </Box>
                   {props.pitches.map((e) => {
                     return (
                       <Box
