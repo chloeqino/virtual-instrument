@@ -15,7 +15,7 @@
 #vis-overlay {
   position: absolute;
 
-  height: 500px;
+  height: 450px;
   overflow: hidden;
   margin-left: 0;
   left: 35px;
@@ -41,7 +41,7 @@
   background-color: rgb(249, 249, 254, 0.3);
 
   align-items: start;
-  overflow: scroll;
+  overflow-x: scroll;
   margin-left: 0.1px;
   width: 100%;
 }
