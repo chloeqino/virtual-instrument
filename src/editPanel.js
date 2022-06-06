@@ -194,8 +194,9 @@ function EditPanel(props) {
       );
     }
   };
-  let xlim =
-    Math.max(4000, Math.ceil(tempEditArr.duration / 1000) * 1000) * 0.1;
+  const xlim = () => {
+    return Math.max(4000, Math.ceil(tempEditArr.duration / 1000) * 1000) * 0.1;
+  };
   //console.log(Math.ceil(tempEditArr.duration / 1000) * 1000);
   return tempEditArr ? (
     <ModalContent className="editModalWindow">
@@ -456,11 +457,12 @@ function EditPanel(props) {
                     );
                   })}
                 </VStack>
+                <Box id="vis-overlay" w={`${xlim()}px`}></Box>
                 <VStack id="vis" ref={visRef}>
                   {props.pitches.map((e) => {
                     return (
                       <Box
-                        w={`${xlim}px`}
+                        w={`${xlim()}px`}
                         className={`y-bar pitch-${e}`}
                         key={`pitchbar-${e}`}
                       >
@@ -539,6 +541,9 @@ function EditPanel(props) {
                         min={0}
                         onChange={(e) => {
                           tempEditArr.arr[selectedNote].duration = Number(e);
+                          tempEditArr.duration = computeDuration(
+                            tempEditArr.arr
+                          );
                         }}
                         onBlur={(e) => {
                           scrollX.current = visRef.current.scrollLeft;
@@ -573,6 +578,9 @@ function EditPanel(props) {
                         min={0}
                         onChange={(e) => {
                           tempEditArr.arr[selectedNote].start = Number(e);
+                          tempEditArr.duration = computeDuration(
+                            tempEditArr.arr
+                          );
                         }}
                         onBlur={(e) => {
                           scrollX.current = visRef.current.scrollLeft;
