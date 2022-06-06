@@ -48,7 +48,7 @@
 .editPanelContainer {
   width: 70vw;
   max-width: 70vw;
-  height: 60vh;
+
   max-height: 450px;
   overflow-x: hidden;
   overflow-y: scroll;

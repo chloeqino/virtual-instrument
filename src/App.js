@@ -21,20 +21,31 @@ function Note(props) {
     props.recording(props.pitch, startTime, stopTime);
   }, [stopTime]);
   useEffect(() => {
-    document.addEventListener("keydown", (e) => {
+    function handler(e) {
       if (e.key.toLocaleLowerCase() == props.char) {
         if (!playing) {
           attack();
         }
       }
-    });
-    document.addEventListener("keyup", (e) => {
+    }
+    document.addEventListener("keydown", handler);
+
+    return () => {
+      document.removeEventListener("keydown", handler);
+    };
+  }, [props.char]);
+  useEffect(() => {
+    function handler(e) {
       if (e.key.toLocaleLowerCase() == props.char) {
         if (playing) {
           release();
         }
       }
-    });
+    }
+    document.addEventListener("keyup", handler);
+    return () => {
+      document.removeEventListener("keyup", handler);
+    };
   }, [props.char]);
   const attack = () => {
     playing = true;

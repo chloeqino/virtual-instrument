@@ -150,6 +150,25 @@ function EditPanel(props) {
     }
   }, [addNew]);
   useEffect(() => {
+    function handler(e) {
+      // console.log(e);
+      if (e.charCode == 0 && selectedNote >= 0) {
+        if (e.target.tagName == "INPUT") {
+          return;
+        }
+        scrollX.current = visRef.current.scrollLeft;
+        scrollY.current = containerRef.current.scrollTop;
+        tempEditArr.arr[selectedNote].duration = 0;
+        setSelectedNote(-1);
+        toggleUpdate(!update);
+      }
+    }
+    document.addEventListener("keydown", handler);
+    return () => {
+      document.removeEventListener("keydown", handler);
+    };
+  });
+  useEffect(() => {
     visRef.current.scrollLeft = scrollX.current;
     containerRef.current.scrollTop = scrollY.current;
     tempEditArr.duration = computeDuration(tempEditArr.arr);
@@ -506,7 +525,7 @@ function EditPanel(props) {
                         (e) => {
                           return (
                             <Box w="100px" className="x-grid">
-                              {e}s
+                              <span>{e}s</span>
                             </Box>
                           );
                         }
