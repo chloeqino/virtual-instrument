@@ -482,7 +482,7 @@ function EditPanel(props) {
                       </HStack>
                     </VStack>
                   </p>
-                  <input type="submit" value="Add"></input>
+                  <input className="addNote" type="submit" value="Add"></input>
                 </form>
               </ScaleFade>
             </div>

@@ -57,6 +57,7 @@
 .footerbtns {
   width: 70vw;
 }
+
 .edit-right {
   display: flex;
   flex-direction: column;
@@ -117,12 +118,22 @@
 }
 .track .playbtn {
   display: none;
+  background-color: #e4e0f6;
+  padding: 5px;
+  color: #4e07d3;
+  border-radius: 15px;
+}
+.track .playbtn.playing {
 }
 .track .index {
   display: inline-table;
+  padding: 10px;
 }
 .track:hover .playbtn {
   display: inline-table;
+}
+.track:hover .index {
+  display: none;
 }
 .tracklist table {
   width: 50%;
@@ -134,18 +145,27 @@
 .tracklist tr .right {
   text-align: right;
 }
-.track:hover .index {
+.track:hover .track .index {
   display: none;
 }
 .track .playbtn.d {
   display: inline-table;
+  background-color: #4e07d3;
+  color: #e4e0f6;
 }
 .track .index.dn {
   display: none;
 }
 .track .idx {
-  width: 50px;
+  padding: 15px;
+  text-align: center;
+  width: 220px;
+  height: 65px;
 }
+th.idx {
+  text-align: center;
+}
+
 .dropdownContainer {
   position: relative;
 }
@@ -156,15 +176,24 @@
   position: absolute;
   background-color: white;
   top: 101%;
-  left: 0;
+  right: 0;
   padding: 14px;
   width: 220px;
   display: none;
   border: 1px solid rgb(230, 226, 240);
   box-shadow: 1px 1px 12px rgba(214, 216, 223, 0.25);
 }
+input.addNote {
+  background-color: #6f53fa;
+  margin-top: 5px;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 5px;
+}
 .control-btns {
   align-self: flex-start;
+  width: 100%;
+  justify-content: space-between !important;
 }
 .dropdown.show {
   display: table;
