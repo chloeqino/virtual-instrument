@@ -151,8 +151,8 @@ function EditPanel(props) {
   }, [addNew]);
   useEffect(() => {
     function handler(e) {
-      // console.log(e);
-      if (e.charCode == 0 && selectedNote >= 0) {
+      console.log(e);
+      if (e.keyCode == 8 && selectedNote >= 0) {
         if (e.target.tagName == "INPUT") {
           return;
         }
