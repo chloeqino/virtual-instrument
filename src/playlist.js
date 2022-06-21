@@ -41,7 +41,7 @@ export default function PlayList(props) {
     for (let i = 0; i < props.tracks.length; i++) {
       currentTracks.push(
         <Track
-          title={`Recording ${i + 1}`}
+          title={props.tracks[i].title}
           notesArr={props.tracks[i].notes}
           duration={props.tracks[i].duration}
           editFunction={openModal}

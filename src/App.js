@@ -3,7 +3,17 @@ import "./App.css";
 import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
 import PlayList from "./playlist";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import {
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Input,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import FrequencyCalculator from "frequency-calculator";
 import { Stack, HStack, VStack, Box } from "@chakra-ui/react";
@@ -22,6 +32,9 @@ function Note(props) {
   }, [stopTime]);
   useEffect(() => {
     function handler(e) {
+      if (props.keyDisabled) {
+        return;
+      }
       if (e.key.toLocaleLowerCase() == props.char) {
         if (!playing) {
           attack();
@@ -36,6 +49,9 @@ function Note(props) {
   }, [props.char]);
   useEffect(() => {
     function handler(e) {
+      if (props.keyDisabled) {
+        return;
+      }
       if (e.key.toLocaleLowerCase() == props.char) {
         if (playing) {
           release();
@@ -71,6 +87,7 @@ function Note(props) {
       <Button
         className="key"
         ref={btn}
+        disabled={props.keyDisabled}
         onMouseDown={(e) => {
           if (!playing) {
             attack();
@@ -134,15 +151,21 @@ function App() {
   ]);
   const [record, setRecord] = useState("stop");
   const [tracks, setTracks] = useState([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const newTrack = useRef(null);
+  const [keyboardDisabled, setkeyboardDisabled] = useState(false);
   const [updatetracks, toggleTracks] = useState(false);
   useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      //console.log(e);
+    function handler(e) {
       if (e.keyCode == 32 && record != "stop") {
         stopRecording();
         // console.log("space");
       }
-    });
+    }
+    document.addEventListener("keydown", handler);
+    return () => {
+      document.removeEventListener("keydown", handler);
+    };
   });
   useEffect(() => {
     console.log(pitches);
@@ -204,13 +227,67 @@ function App() {
     let newrecording = {};
     newrecording.duration = r_end - r_start + 1;
     newrecording.notes = recordings;
-    setTracks([...tracks, newrecording]);
-    r_start = 0;
-    r_end = 0;
-    recordings = [];
+    newrecording.title = "Untitled Recording " + (tracks.length + 1);
+    console.log("new title" + newrecording.title);
+    newTrack.current = newrecording;
+    setkeyboardDisabled(true);
+    onOpen();
+    // setTracks([...tracks, newrecording]);
+    //r_start = 0;
+    //r_end = 0;
+    //recordings = [];
   };
   return (
     <div className="App">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        key={isOpen}
+        closeOnOverlayClick={false}
+        isCentered
+      >
+        <ModalOverlay />
+        {isOpen ? (
+          <ModalContent>
+            <ModalHeader>Modal Title</ModalHeader>
+
+            <ModalBody>
+              <label htmlFor="newtrack-title">title</label>
+              <Input
+                id="newtrack-title"
+                defaultValue={newTrack.current.title}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  newTrack.current.title = e.target.value;
+                }}
+              />
+            </ModalBody>
+
+            <ModalFooter>
+              <Button
+                colorScheme="blue"
+                onClick={() => {
+                  setTracks([
+                    ...tracks,
+                    JSON.parse(JSON.stringify(newTrack.current)),
+                  ]);
+                  r_start = 0;
+                  r_end = 0;
+                  recordings = [];
+                  newTrack.current = null;
+                  onClose();
+                  setkeyboardDisabled(false);
+                }}
+              >
+                Save
+              </Button>
+              <Button variant="ghost">Secondary Action</Button>
+            </ModalFooter>
+          </ModalContent>
+        ) : (
+          ``
+        )}
+      </Modal>
       <button
         onClick={() => {
           startTone();
@@ -250,8 +327,9 @@ function App() {
             <Note
               pitch={p}
               recording={addtoRecording}
-              key={`pitches#${i}`}
+              key={`pitches#${i}disabled${keyboardDisabled}`}
               startTime={now}
+              keyDisabled={keyboardDisabled}
               char={keys.length > i ? keys[i] : null}
             />
           );

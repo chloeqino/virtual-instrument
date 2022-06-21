@@ -183,6 +183,9 @@ th.idx {
   border: 1px solid rgb(230, 226, 240);
   box-shadow: 1px 1px 12px rgba(214, 216, 223, 0.25);
 }
+.editBtn {
+  text-decoration: underline;
+}
 input.addNote {
   background-color: #6f53fa;
   margin-top: 5px;

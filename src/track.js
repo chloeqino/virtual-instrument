@@ -69,6 +69,7 @@ export default function Track(props) {
       </Td>
       <Td>
         <button
+          className="editBtn"
           onClick={() => {
             props.editFunction(props.notesArr, props.duration, props.index);
           }}
