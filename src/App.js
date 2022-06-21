@@ -243,6 +243,7 @@ function App() {
         isOpen={isOpen}
         onClose={onClose}
         key={isOpen}
+        autoFocus={false}
         closeOnOverlayClick={false}
         isCentered
       >
@@ -256,6 +257,11 @@ function App() {
               <Input
                 id="newtrack-title"
                 defaultValue={newTrack.current.title}
+                onFocus={(e) => {
+                  if (/Untitled Recording[ \d]*/.test(e.target.value)) {
+                    e.target.select();
+                  }
+                }}
                 onChange={(e) => {
                   console.log(e.target.value);
                   newTrack.current.title = e.target.value;
