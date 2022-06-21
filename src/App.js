@@ -237,6 +237,14 @@ function App() {
     //r_end = 0;
     //recordings = [];
   };
+  useEffect(() => {
+    if (isOpen) {
+      console.log("entering");
+      setTimeout(() => {
+        document.getElementById("newtrack-title").focus();
+      }, 100);
+    }
+  }, [isOpen]);
   return (
     <div className="App">
       <Modal
@@ -260,6 +268,7 @@ function App() {
                 onFocus={(e) => {
                   if (/Untitled Recording[ \d]*/.test(e.target.value)) {
                     e.target.select();
+                    e.target.setSelectionRange(0, e.target.value.length);
                   }
                 }}
                 onChange={(e) => {
