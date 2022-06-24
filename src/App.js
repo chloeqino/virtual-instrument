@@ -151,6 +151,7 @@ function App() {
   ]);
   const [record, setRecord] = useState("stop");
   const [tracks, setTracks] = useState([]);
+  const currentSythns = useRef([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const newTrack = useRef(null);
   const [keyboardDisabled, setkeyboardDisabled] = useState(false);
@@ -237,6 +238,31 @@ function App() {
     //r_end = 0;
     //recordings = [];
   };
+  const playPreview = () => {
+    //console.log(props.notesArr);
+    for (let i = 0; i < newTrack.current.notes.length; i++) {
+      let now = Tone.now();
+      let note = newTrack.current.notes[i];
+      let synth = new Tone.Synth({
+        envelope: {
+          attack: note.attack,
+          decay: note.decay,
+          sustain: note.sustain,
+          release: note.release,
+        },
+      }).toDestination();
+      currentSythns.current.push(synth);
+      //console.log(note);
+      Tone.Transport.schedule((time) => {
+        synth.triggerAttackRelease(
+          note.pitch,
+          note.duration / 1000,
+          now + note.start / 1000
+        );
+      });
+    }
+    Tone.Transport.start();
+  };
   useEffect(() => {
     if (isOpen) {
       console.log("entering");
@@ -258,7 +284,7 @@ function App() {
         <ModalOverlay />
         {isOpen ? (
           <ModalContent>
-            <ModalHeader>Modal Title</ModalHeader>
+            <ModalHeader>New Track</ModalHeader>
 
             <ModalBody>
               <label htmlFor="newtrack-title">title</label>
@@ -276,9 +302,16 @@ function App() {
                   newTrack.current.title = e.target.value;
                 }}
               />
+              <Button
+                onClick={() => {
+                  playPreview();
+                }}
+              >
+                Play
+              </Button>
             </ModalBody>
 
-            <ModalFooter>
+            <ModalFooter justifyContent="space-evenly">
               <Button
                 colorScheme="blue"
                 onClick={() => {
@@ -296,7 +329,24 @@ function App() {
               >
                 Save
               </Button>
-              <Button variant="ghost">Secondary Action</Button>
+              <Button
+                className="discardBtn"
+                variant="ghost"
+                onClick={() => {
+                  r_start = 0;
+                  r_end = 0;
+                  recordings = [];
+                  newTrack.current = null;
+                  for (let i = 0; i < currentSythns.current.length; i++) {
+                    currentSythns.current[i].dispose();
+                  }
+                  currentSythns.current = [];
+                  onClose();
+                  setkeyboardDisabled(false);
+                }}
+              >
+                Discard
+              </Button>
             </ModalFooter>
           </ModalContent>
         ) : (

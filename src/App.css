@@ -26,6 +26,10 @@
   position: relative;
   left: 0px;
 }
+button.discardBtn {
+  background-color: rgb(242, 223, 226);
+  color: rgb(195, 19, 45);
+}
 #vis-overlay .x-grid {
   color: #bdbcc2;
   padding-left: 2px;
