@@ -42,6 +42,7 @@ export default function PlayList(props) {
       currentTracks.push(
         <Track
           title={props.tracks[i].title}
+          coverImg={props.tracks[i].imgUrl}
           notesArr={props.tracks[i].notes}
           duration={props.tracks[i].duration}
           editFunction={openModal}

@@ -17,6 +17,7 @@ import {
 import { extendTheme } from "@chakra-ui/react";
 import FrequencyCalculator from "frequency-calculator";
 import { Stack, HStack, VStack, Box } from "@chakra-ui/react";
+import defaultImg from "./defaultcover.png";
 
 function Note(props) {
   const synth = new Tone.Synth().toDestination();
@@ -229,6 +230,7 @@ function App() {
     newrecording.duration = r_end - r_start + 1;
     newrecording.notes = recordings;
     newrecording.title = "Untitled Recording " + (tracks.length + 1);
+    newrecording.imgUrl = defaultImg;
     console.log("new title" + newrecording.title);
     newTrack.current = newrecording;
     setkeyboardDisabled(true);
@@ -283,32 +285,67 @@ function App() {
       >
         <ModalOverlay />
         {isOpen ? (
-          <ModalContent>
+          <ModalContent w="80vw" maxW="500px">
             <ModalHeader>New Track</ModalHeader>
 
             <ModalBody>
-              <label htmlFor="newtrack-title">title</label>
-              <Input
-                id="newtrack-title"
-                defaultValue={newTrack.current.title}
-                onFocus={(e) => {
-                  if (/Untitled Recording[ \d]*/.test(e.target.value)) {
-                    e.target.select();
-                    e.target.setSelectionRange(0, e.target.value.length);
-                  }
-                }}
-                onChange={(e) => {
-                  console.log(e.target.value);
-                  newTrack.current.title = e.target.value;
-                }}
-              />
-              <Button
-                onClick={() => {
-                  playPreview();
-                }}
-              >
-                Play
-              </Button>
+              <HStack>
+                <p>
+                  <img
+                    src={defaultImg}
+                    id="uploaded-cover"
+                    onClick={() => {
+                      document.getElementById("cover-upload").click();
+                    }}
+                  />
+                  <label htmlFor="cover-upload" id="uploadBtn">
+                    Upload cover image
+                    <input
+                      id="cover-upload"
+                      name="fileupload"
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={(e) => {
+                        let reader;
+                        if (e.target.files && e.target.files[0]) {
+                          reader = new FileReader();
+                          reader.onload = function (event) {
+                            newTrack.current.imgUrl = event.target.result;
+                            document.getElementById("uploaded-cover").src =
+                              event.target.result;
+                          };
+                          reader.readAsDataURL(e.target.files[0]);
+                        }
+                      }}
+                    />
+                  </label>
+                </p>
+                <p>
+                  <label htmlFor="newtrack-title">title</label>
+                  <Input
+                    id="newtrack-title"
+                    defaultValue={newTrack.current.title}
+                    onFocus={(e) => {
+                      if (/Untitled Recording[ \d]*/.test(e.target.value)) {
+                        e.target.select();
+                        e.target.setSelectionRange(0, e.target.value.length);
+                      }
+                    }}
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      newTrack.current.title = e.target.value;
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      playPreview();
+                    }}
+                  >
+                    Play
+                  </Button>
+                </p>
+              </HStack>
             </ModalBody>
 
             <ModalFooter justifyContent="space-evenly">

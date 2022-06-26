@@ -219,10 +219,37 @@ button.primary:hover {
   padding: 12px 0;
   justify-content: center;
 }
+#uploaded-cover {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
 #keyboard .key {
-  background: white;
+  background: #f3f5ff;
+
+  color: #614ed7;
   font-size: 25px;
 }
+.cover-img {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+}
+label#uploadBtn {
+  overflow: hidden;
+  position: relative;
+  max-height: 200px;
+  background: #614ed7;
+  font-size: 12px;
+  padding: 6px 3px;
+  color: white;
+  border-radius: 12px;
+}
+label#uploadBtn input {
+  position: absolute;
+  top: -100%;
+}
+
 #keyboard .label {
   color: #6c58ef;
 }

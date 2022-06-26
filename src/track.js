@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as Tone from "tone";
-import { Tr, Td } from "@chakra-ui/react";
+import { Tr, Td, HStack } from "@chakra-ui/react";
+import defaultImg from "./defaultcover.png";
 
 export default function Track(props) {
   const [playing, togglePlaying] = useState(false);
@@ -63,7 +64,12 @@ export default function Track(props) {
           play
         </button>
       </Td>
-      <Td>{props.title}</Td>
+      <Td>
+        <HStack>
+          <img src={props.coverImg} className="cover-img" />
+          <span>{props.title}</span>
+        </HStack>
+      </Td>
       <Td isNumeric className="right">
         {(props.duration / 1000).toFixed(2)}
       </Td>
