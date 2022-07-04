@@ -111,6 +111,20 @@ button.discardBtn {
   height: 15px;
   border-radius: 5px;
 }
+.note-bar .leftdrag {
+  height: 15px;
+  width: 1px;
+  background-color: red;
+  position: absolute;
+  left: 0;
+}
+.note-bar .rightdrag {
+  height: 15px;
+  width: 1px;
+  background-color: red;
+  position: absolute;
+  right: 0;
+}
 .note-bar:hover {
   outline: 3px solid rgb(16, 246, 223);
 }

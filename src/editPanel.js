@@ -26,6 +26,39 @@ import * as Tone from "tone";
 import { Scale } from "tone";
 function NoteBar(props) {
   const barRef = useRef();
+  const leftDrag = useRef(false);
+  useEffect(() => {
+    function handler(e) {
+      if (leftDrag.current) {
+        barRef.current.style.left =
+          Math.max(barRef.current.offsetLeft + e.movementX, 0) + "px";
+        if (barRef.current.offsetLeft >= 1) {
+          barRef.current.style.width =
+            barRef.current.clientWidth - e.movementX + "px";
+        }
+        props.updateNoteFunction(
+          barRef.current.clientWidth / props.scale,
+          barRef.current.offsetLeft / props.scale
+        );
+      }
+    }
+    document.addEventListener("mousemove", handler);
+    return () => {
+      document.removeEventListener("mousemove", handler);
+    };
+  });
+  useEffect(() => {
+    function handler(e) {
+      if (leftDrag.current) {
+        leftDrag.current = false;
+        console.log("updating...");
+      }
+    }
+    document.addEventListener("mouseup", handler);
+    return () => {
+      document.removeEventListener("mouseup", handler);
+    };
+  });
   useOutsideClick({
     enabled: true,
     ref: barRef,
@@ -58,7 +91,19 @@ function NoteBar(props) {
       onClick={() => {
         props.selectedFunction(props.idx, barRef.current);
       }}
-    ></Box>
+    >
+      <div
+        className="leftdrag"
+        onMouseDown={(e) => {
+          console.log("leftdrag" + e.target.parentNode.offsetLeft);
+          leftDrag.current = true;
+        }}
+        onMouseUp={(e) => {
+          leftDrag.current = false;
+        }}
+      ></div>
+      <div className="rightdrag"></div>
+    </Box>
   );
 }
 function EditPanel(props) {
@@ -85,6 +130,7 @@ function EditPanel(props) {
   const release_input = useRef(1);
   const [vis_size, setVisSize] = useState(0);
   const overlayRef = useRef();
+  const [formUpdate, toggleFormUpdate] = useState(false);
 
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
@@ -540,7 +586,7 @@ function EditPanel(props) {
                         key={`pitchbar-${e}`}
                       >
                         {tempEditArr.arr
-                          .filter((note) => note.pitch == e)
+                          .filter((note, i) => note.pitch == e)
                           .map((bar) => {
                             return (
                               <NoteBar
@@ -550,6 +596,25 @@ function EditPanel(props) {
                                 idx={bar.idx}
                                 key={JSON.stringify(bar)}
                                 scale={0.1}
+                                updateNoteFunction={(d, s) => {
+                                  console.log(
+                                    "calling uoppdate" +
+                                      JSON.stringify(tempEditArr.arr[bar.idx]) +
+                                      "d" +
+                                      d
+                                  );
+                                  tempEditArr.arr[bar.idx].duration = d;
+                                  tempEditArr.arr[bar.idx].start = s;
+                                  if (selectedNote == bar.idx) {
+                                    document.getElementById(
+                                      "stime-edit"
+                                    ).value = s;
+                                    document.getElementById(
+                                      "duration-edit"
+                                    ).value = d;
+                                  }
+                                  // toggleFormUpdate(!formUpdate);
+                                }}
                                 selected={bar.idx == selectedNote}
                                 selectedFunction={(p1, p2) => {
                                   setSelected(p1, p2);
@@ -564,7 +629,9 @@ function EditPanel(props) {
               </HStack>
             </div>
             <div
-              key={JSON.stringify(tempEditArr.arr[selectedNote])}
+              key={
+                JSON.stringify(tempEditArr.arr[selectedNote]) + "#" + formUpdate
+              }
               className="edit-right"
             >
               {selectedNote >= 0 ? (
