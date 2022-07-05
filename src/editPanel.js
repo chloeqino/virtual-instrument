@@ -27,6 +27,7 @@ import { Scale } from "tone";
 function NoteBar(props) {
   const barRef = useRef();
   const leftDrag = useRef(false);
+  const rightDrag = useRef(false);
   useEffect(() => {
     function handler(e) {
       if (leftDrag.current) {
@@ -34,7 +35,16 @@ function NoteBar(props) {
           Math.max(barRef.current.offsetLeft + e.movementX, 0) + "px";
         if (barRef.current.offsetLeft >= 1) {
           barRef.current.style.width =
-            barRef.current.clientWidth - e.movementX + "px";
+            Math.max(1, barRef.current.clientWidth - e.movementX) + "px";
+        }
+        props.updateNoteFunction(
+          barRef.current.clientWidth / props.scale,
+          barRef.current.offsetLeft / props.scale
+        );
+      } else if (rightDrag.current) {
+        if (barRef.current.clientWidth >= 1) {
+          barRef.current.style.width =
+            Math.max(1, barRef.current.clientWidth + e.movementX) + "px";
         }
         props.updateNoteFunction(
           barRef.current.clientWidth / props.scale,
@@ -52,6 +62,9 @@ function NoteBar(props) {
       if (leftDrag.current) {
         leftDrag.current = false;
         console.log("updating...");
+      }
+      if (rightDrag.current) {
+        rightDrag.current = false;
       }
     }
     document.addEventListener("mouseup", handler);
@@ -98,11 +111,13 @@ function NoteBar(props) {
           console.log("leftdrag" + e.target.parentNode.offsetLeft);
           leftDrag.current = true;
         }}
-        onMouseUp={(e) => {
-          leftDrag.current = false;
+      ></div>
+      <div
+        className="rightdrag"
+        onMouseDown={(e) => {
+          rightDrag.current = true;
         }}
       ></div>
-      <div className="rightdrag"></div>
     </Box>
   );
 }
@@ -597,12 +612,12 @@ function EditPanel(props) {
                                 key={JSON.stringify(bar)}
                                 scale={0.1}
                                 updateNoteFunction={(d, s) => {
-                                  console.log(
+                                  /*console.log(
                                     "calling uoppdate" +
                                       JSON.stringify(tempEditArr.arr[bar.idx]) +
                                       "d" +
                                       d
-                                  );
+                                  );*/
                                   tempEditArr.arr[bar.idx].duration = d;
                                   tempEditArr.arr[bar.idx].start = s;
                                   if (selectedNote == bar.idx) {

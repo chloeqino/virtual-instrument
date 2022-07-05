@@ -113,14 +113,14 @@ button.discardBtn {
 }
 .note-bar .leftdrag {
   height: 15px;
-  width: 1px;
+  width: 2px;
   background-color: red;
   position: absolute;
   left: 0;
 }
 .note-bar .rightdrag {
   height: 15px;
-  width: 1px;
+  width: 2px;
   background-color: red;
   position: absolute;
   right: 0;
