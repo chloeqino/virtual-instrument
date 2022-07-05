@@ -251,7 +251,7 @@ function EditPanel(props) {
     });
     console.log(visRef.current);
     visRef.current.addEventListener("scroll", (e) => {
-      console.log("scrolling" + e.target.scrollLeft);
+      //console.log("scrolling" + e.target.scrollLeft);
       document.getElementById("overlay-scroll").style.left =
         e.target.scrollLeft * -1 + "px";
       //console.log("scrolling" + overlayRef.current.scrollLeft);
