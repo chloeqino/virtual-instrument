@@ -145,7 +145,9 @@ function EditPanel(props) {
   const release_input = useRef(1);
   const [vis_size, setVisSize] = useState(0);
   const overlayRef = useRef();
+  const progressRef = useRef();
   const [formUpdate, toggleFormUpdate] = useState(false);
+  const currentPos = useRef(0);
 
   const [tempEditArr, settempEditArr] = useState(
     JSON.parse(JSON.stringify(props.editArr))
@@ -278,6 +280,21 @@ function EditPanel(props) {
     }).toDestination();
     synth.triggerAttackRelease(note.pitch, note.duration / 1000, now);
   };
+  const moveIndicaotr = () => {
+    currentPos.current = 0;
+    let id = setInterval(frame, 10);
+    function frame() {
+      progressRef.current.style.left = currentPos.current + "px";
+      currentPos.current = currentPos.current + 1;
+      if (currentPos.current >= tempEditArr.duration * 0.1) {
+        clearInterval(id);
+        currentPos.current = 0;
+        setTimeout(() => {
+          progressRef.current.style.left = currentPos.current + "px";
+        }, 1000);
+      }
+    }
+  };
   const startplay = () => {
     Tone.start();
 
@@ -350,6 +367,7 @@ function EditPanel(props) {
               className="playbtn"
               onClick={() => {
                 startplay();
+                moveIndicaotr();
               }}
             >
               play
@@ -576,6 +594,13 @@ function EditPanel(props) {
                   }}
                 >
                   <Box
+                    id="prog-indicator"
+                    w="2px"
+                    h="450px"
+                    position="absolute"
+                    ref={progressRef}
+                  ></Box>
+                  <Box
                     id="vis-overlay"
                     key={`size-${vis_size}`}
                     w={`${vis_size}px`}
@@ -628,6 +653,9 @@ function EditPanel(props) {
                                       "duration-edit"
                                     ).value = d;
                                   }
+                                  tempEditArr.duration = computeDuration(
+                                    tempEditArr.arr
+                                  );
                                   // toggleFormUpdate(!formUpdate);
                                 }}
                                 selected={bar.idx == selectedNote}
