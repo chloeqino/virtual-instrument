@@ -6,6 +6,9 @@
   height: 40vmin;
   pointer-events: none;
 }
+html {
+  cursor: ew-resize !important;
+}
 
 .track {
   justify-content: center;
@@ -39,7 +42,10 @@ button.discardBtn {
   width: 100px !important;
   border-right: 1px solid #bdbcc2;
 }
-
+.x-grid,
+.y-bar {
+  cursor: default;
+}
 #vis {
   background-attachment: local;
   background-color: rgb(249, 249, 254, 0.3);
@@ -114,16 +120,18 @@ button.discardBtn {
 .note-bar .leftdrag {
   height: 15px;
   width: 2px;
-  background-color: red;
+  background-color: transparent;
   position: absolute;
   left: 0;
+  cursor: ew-resize;
 }
 .note-bar .rightdrag {
   height: 15px;
   width: 2px;
-  background-color: red;
+  background-color: transparent;
   position: absolute;
   right: 0;
+  cursor: ew-resize;
 }
 .note-bar:hover {
   outline: 3px solid rgb(16, 246, 223);

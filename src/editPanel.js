@@ -66,6 +66,7 @@ function NoteBar(props) {
       if (rightDrag.current) {
         rightDrag.current = false;
       }
+      resizeCursor(false);
     }
     document.addEventListener("mouseup", handler);
     return () => {
@@ -94,6 +95,24 @@ function NoteBar(props) {
       }
     },
   });
+  const resizeCursor = (on = true) => {
+    let ybars = document.getElementsByClassName("y-bar");
+    let xgrids = document.getElementsByClassName("x-grid");
+    for (let i = 0; i < ybars.length; i++) {
+      if (on) {
+        ybars[i].style.cursor = "ew-resize";
+      } else {
+        ybars[i].style.cursor = "default";
+      }
+    }
+    for (let i = 0; i < xgrids.length; i++) {
+      if (on) {
+        xgrids[i].style.cursor = "ew-resize";
+      } else {
+        xgrids[i].style.cursor = "default";
+      }
+    }
+  };
   return (
     <Box
       className={`note-bar ${props.selected ? "active" : ""}`}
@@ -108,6 +127,7 @@ function NoteBar(props) {
       <div
         className="leftdrag"
         onMouseDown={(e) => {
+          resizeCursor();
           console.log("leftdrag" + e.target.parentNode.offsetLeft);
           leftDrag.current = true;
         }}
@@ -115,6 +135,7 @@ function NoteBar(props) {
       <div
         className="rightdrag"
         onMouseDown={(e) => {
+          resizeCursor();
           rightDrag.current = true;
         }}
       ></div>
@@ -282,7 +303,7 @@ function EditPanel(props) {
   };
   const moveIndicaotr = () => {
     currentPos.current = 0;
-    let id = setInterval(frame, 10);
+    let id = setInterval(frame, 10.5);
     function frame() {
       progressRef.current.style.left = currentPos.current + "px";
       currentPos.current = currentPos.current + 1;
