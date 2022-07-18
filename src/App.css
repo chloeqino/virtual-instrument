@@ -17,7 +17,7 @@ html {
 }
 #vis-overlay {
   position: absolute;
-
+  user-select: none;
   height: 450px;
   overflow: hidden;
   margin-left: 0;
