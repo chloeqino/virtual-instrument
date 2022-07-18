@@ -255,6 +255,10 @@ function EditPanel(props) {
   useEffect(() => {
     visRef.current.scrollLeft = scrollX.current;
     containerRef.current.scrollTop = scrollY.current;
+  }, [vis_size]);
+  useEffect(() => {
+    visRef.current.scrollLeft = scrollX.current;
+    containerRef.current.scrollTop = scrollY.current;
     tempEditArr.duration = computeDuration(tempEditArr.arr);
     if (visRef.current) {
       setVisSize(visRef.current.scrollWidth);
@@ -275,8 +279,8 @@ function EditPanel(props) {
     console.log(visRef.current);
     visRef.current.addEventListener("scroll", (e) => {
       //console.log("scrolling" + e.target.scrollLeft);
-      document.getElementById("overlay-scroll").style.left =
-        e.target.scrollLeft * -1 + "px";
+      /* document.getElementById("overlay-scroll").style.left =
+        e.target.scrollLeft * -1 + "px";*/
       //console.log("scrolling" + overlayRef.current.scrollLeft);
     });
     overlayRef.current.addEventListener("scroll", (e) => {
@@ -610,8 +614,9 @@ function EditPanel(props) {
                   id="vis"
                   ref={visRef}
                   onScroll={(e) => {
-                    document.getElementById("overlay-scroll").style.left =
-                      e.target.scrollLeft * -1 + "px";
+                    console.log("scrolling:\n" + e.target.scrollLeft);
+                    /* document.getElementById("overlay-scroll").style.left =
+                      e.target.scrollLeft * -1 + "px";*/
                   }}
                 >
                   <Box
@@ -674,9 +679,17 @@ function EditPanel(props) {
                                       "duration-edit"
                                     ).value = d;
                                   }
-                                  tempEditArr.duration = computeDuration(
+                                  let prevDuration = tempEditArr.duration;
+                                  let currentDuration = computeDuration(
                                     tempEditArr.arr
                                   );
+                                  tempEditArr.duration = currentDuration;
+                                  if (currentDuration > prevDuration) {
+                                    scrollX.current = visRef.current.scrollLeft;
+                                    scrollY.current =
+                                      containerRef.current.scrollTop;
+                                    setVisSize(visRef.current.scrollWidth);
+                                  }
                                   // toggleFormUpdate(!formUpdate);
                                 }}
                                 selected={bar.idx == selectedNote}

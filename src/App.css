@@ -21,7 +21,7 @@ html {
   height: 450px;
   overflow: hidden;
   margin-left: 0;
-  left: 35px;
+  left: 0px;
 }
 #overlay-scroll {
   overflow-x: scroll;
